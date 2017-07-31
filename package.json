@@ -14,8 +14,9 @@
     "ejs": "2.5.6",
     "express": "4.15.2",
     "google-auth-library": "^0.10.0",
+    "googleapis": "^20.1.0",
     "morgan": "^1.8.2",
-    "pg": "6.x"
+    "pg": "^6.4.1"
   },
   "repository": {
     "type": "git",
