@@ -5,11 +5,11 @@ var bodyParser = require('body-parser');
 // var GoogleAuth = require('google-auth-library');
 
 // using separate file for routing
-var routes = require('./routes');
+var santaApiRoutes = require('./santApiRoutes');
 
 // Setup the express app
 var app = express();
-app.use('/santAPI', routes);
+app.use('/santAPI', santaApiRoutes);
 app.set('port', (process.env.PORT || 5000));
 
 // Setup logging requests to console
