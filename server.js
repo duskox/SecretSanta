@@ -1,13 +1,26 @@
 var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var postgresDB = require('pg');
 // var google = require('googleapis');
 // var GoogleAuth = require('google-auth-library');
 
 // using separate file for routing
 var santaApiRoutes = require('./santApiRoutes');
 
-// Setup the express app
+// **********************
+// Setup the POSTGRESS DB
+var databaseClient = null;
+postgresDB.defaults.ssl = true;
+postgresDB.connect(process.env.DATABASE_URI, function(err, client) {
+  if (err) throw err;
+  console.log('Connected to database.');
+  databaseClient = client;
+});
+
+
+// *********************
+// Setup the EXPRESS app
 var app = express();
 app.use('/santAPI', santaApiRoutes);
 app.set('port', (process.env.PORT || 5000));
