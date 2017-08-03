@@ -8,7 +8,7 @@ module.exports = {
   addUser : function(req, res){
     reqUtil.logRequestContents(req);
 
-     const payload = req.params;
+     const payload = req.body;
      if (!payload.email && !payload.password) {
        const errorMessage = { message: "Missing parameters (email, password)" };
        res.status(400).send(JSON.stringify(errorMessage));

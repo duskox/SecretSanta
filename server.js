@@ -10,14 +10,16 @@ var santaApiRoutes = require('./santApiRoutes');
 // *********************
 // Setup the EXPRESS app
 var app = express();
+
+// Parse incoming requests data
+app.use(bodyParser.json());
+
 app.use('/santAPI', santaApiRoutes);
 app.set('port', (process.env.PORT || 5000));
 
 // Setup logging requests to console
 app.use(logger('dev'));
 
-// Parse incoming requests data
-app.use(bodyParser.json());
 
 app.use(express.static(__dirname + '/public'));
 

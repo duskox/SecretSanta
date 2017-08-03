@@ -16,6 +16,12 @@ module.exports = {
     if(request._eventsCount) {
       console.log("_eventsCount:" + request._eventsCount);
     }
+    if(request.body) {
+      console.log("body:" + Object.keys(request.body));
+    }
+    if(request._body) {
+      console.log("_body:" + JSON.parse(request._body));
+    }
     if(request.__maxListeners) {
       console.log("__maxListeners:" + request.__maxListeners);
     }
