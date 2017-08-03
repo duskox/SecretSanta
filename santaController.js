@@ -1,3 +1,4 @@
+var postgresDB = require('pg');
 module.exports = {
   getAsignee : function(req, res){
      // ovdje je funkcija koja za jedan ulaz uvijek daje izlaz, lako za test
@@ -19,6 +20,7 @@ module.exports = {
   },
   returnListOfOrganisations : function (req, res) {
     // TODO: return list of organisations, REQUEST MUST HAVE CORRECT USER TOKEN
+
   },
   assignUserToOrganisation : function (req, res) {
     // TODO: assign a user to an organisation, REQUEST MUST HAVE CORRECT USER TOKEN
