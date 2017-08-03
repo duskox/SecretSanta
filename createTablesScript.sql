@@ -1,8 +1,14 @@
 CREATE TABLE users (
   id bigserial PRIMARY KEY,
   email varchar(255) NOT NULL UNIQUE, -- could be primary key
-  password varchar(255) NOT NULL, -- this shouls be encrypted
+  password char(60) NOT NULL, -- this is encrypted, hash will be 60 chars long
   name varchar(255) NOT NULL
+);
+
+CREATE TABLE user_tokens (
+  user_id bigint NOT NULL,
+  token varchar(255),
+  PRIMARY KEY (user_id, token)
 );
 
 CREATE TABLE organisations (
