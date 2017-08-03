@@ -1,10 +1,21 @@
 var postgresDB = require('pg');
+var reqUtil = require('./utils/requestUtils')
+
 module.exports = {
   getAsignee : function(req, res){
      // ovdje je funkcija koja za jedan ulaz uvijek daje izlaz, lako za test
   },
   addUser : function(req, res){
-     //do something
+    reqUtil.logRequestContents(req);
+
+     const payload = req.params;
+     if (!payload.email && !payload.password) {
+       const errorMessage = { message: "Missing parameters (email, password)" };
+       res.status(400).send(JSON.stringify(errorMessage));
+       return;
+     }
+
+     res.status(200).send(JSON.stringify(payload));
   },
   postMovie : function(req, res){
      //do something

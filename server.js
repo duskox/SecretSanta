@@ -1,11 +1,10 @@
 var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
+var santaApiRoutes = require('./santApiRoutes');
 // var google = require('googleapis');
 // var GoogleAuth = require('google-auth-library');
 
-// using separate file for routing
-var santaApiRoutes = require('./santApiRoutes');
 
 
 // *********************
@@ -17,13 +16,12 @@ app.set('port', (process.env.PORT || 5000));
 // Setup logging requests to console
 app.use(logger('dev'));
 
-// // Parse incoming requests data
+// Parse incoming requests data
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended : false }));
 
 app.use(express.static(__dirname + '/public'));
 
-// // views is directory for all template files
+// views is directory for all template files
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 
