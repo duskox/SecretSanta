@@ -16,10 +16,10 @@
     "express": "4.15.2",
     "google-auth-library": "^0.10.0",
     "googleapis": "^20.1.0",
-    "jsonwebtoken": "^7.4.1",
+    "jsonwebtoken": "^7.4.2",
     "knex": "^0.13.0",
     "morgan": "^1.8.2",
-    "pg": "^6.4.1"
+    "pg": "^7.1.0"
   },
   "repository": {
     "type": "git",
