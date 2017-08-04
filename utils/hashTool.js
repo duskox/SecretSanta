@@ -1,5 +1,7 @@
 var bcrypt = require('bcryptjs');
 
+module.exports = {getHashForString, verifyStringWithHash};
+
 // var salt = bcrypt.genSaltSync(process.env.BCRYPTJS_SALT);
 var salt = bcrypt.genSaltSync(10);
 
@@ -12,5 +14,3 @@ function verifyStringWithHash(string, hash) {
   result = bcrypt.compareSync(string, hash);
   return result;
 }
-
-module.exports = getHashForString, verifyStringWithHash;
