@@ -1,5 +1,6 @@
 var postgresDB = require('pg');
 
+module.exports = insertUser,insertUserToken;
 
 function getDBClient() {
   var databaseClient = null;
@@ -12,7 +13,7 @@ function getDBClient() {
   return databaseClient;
 }
 
-export function insertUser(name, email, password) {
+function insertUser(name, email, password) {
   var dbClient = getDBClient();
   var sqlResult;
   var query = "INSERT INTO users (email, password, name) VALUES (" + email + "," + password + "," + name + ");"
@@ -28,7 +29,7 @@ export function insertUser(name, email, password) {
   return sqlResult;
 }
 
-export function insertUserToken(user_id, token) {
+function insertUserToken(user_id, token) {
   var dbClient = getDBClient();
   var query = "INSERT INTO user_tokens (user_id, token) VALUES (" + user_id + "," + token + ");"
   dbClient.query(query, function(err, result) {
