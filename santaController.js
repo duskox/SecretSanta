@@ -15,12 +15,16 @@ function addUser(req,res) {
     var passHash = hashTool.getHashForString(payload.password);
     var userToken = tokenTool.getTokenForUserEmail(payload.email);
 
-    var userId = dbHelper.insertUser(payload.name, payload.email, passHash);
-    dbHelper.insertUserToken(userId, userToken);
-
-    var result_body = { token: userToken };
-
-    res.status(200).send(JSON.stringify(result_body));
+    dbHelper
+      .insertUser(payload.name, payload.email, passHash)
+      .then((user_id) => {
+        return dbHelper
+          .insertUserToken(user_id, userToken);
+      })
+      .then(
+        res.status(200).send(JSON.stringify({ token: userToken }))
+      )
+      .catch(res.status(500));
 }
 
 function getOrganisationInfo(req, res) {
