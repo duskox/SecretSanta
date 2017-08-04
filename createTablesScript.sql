@@ -8,7 +8,9 @@ CREATE TABLE users (
 CREATE TABLE user_tokens (
   user_id bigint NOT NULL,
   token varchar(255),
-  PRIMARY KEY (user_id, token)
+  PRIMARY KEY (user_id, token),
+  CONSTRAINT fk_user_exists
+    FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
 CREATE TABLE organisations (

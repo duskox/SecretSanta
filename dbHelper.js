@@ -12,14 +12,30 @@ function getDBClient() {
   return databaseClient;
 }
 
-function insertUser(name, email, password) {
+export function insertUser(name, email, password) {
   var dbClient = getDBClient();
+  var sqlResult;
   var query = "INSERT INTO users (email, password, name) VALUES (" + email + "," + password + "," + name + ");"
+  dbClient.query(query, function(err, result) {
+    if (err) {
+      console.err("Could not complete query:", err);
+      return -1;
+    }
+    sqlResult = result;
+    console.log(result.rows[0].fieldName);
+  });
+  dbClient.end();
+  return sqlResult;
+}
+
+export function insertUserToken(user_id, token) {
+  var dbClient = getDBClient();
+  var query = "INSERT INTO user_tokens (user_id, token) VALUES (" + user_id + "," + token + ");"
   dbClient.query(query, function(err, result) {
     if (err) {
       return console.err("Could not complete query:", err);
     }
-    // console.log(result.rows[0].fieldName);
+    console.log(result.rows[0].fieldName);
   });
   dbClient.end();
 }
