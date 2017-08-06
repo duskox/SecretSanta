@@ -27,6 +27,42 @@ function addUser(req,res) {
       .catch(res.status(500));
 }
 
+function isUserInOrganisation(req, res) {
+  const payload = req.body;
+  if (!payload.email || !payload.user_token) {
+    const errorMessage = { message: "Register call with invalid parameters" };
+    res.status(400).send(JSON.stringify(errorMessage));
+    return;
+  }
+}
+
+function verifyUserToken(req, res) {
+  const payload = req.body;
+  console.log("Payload:", payload);
+  if (!payload.email || !payload.token) {
+    const errorMessage = { message: "Register call with invalid parameters" };
+    res.status(400).send(JSON.stringify(errorMessage));
+    return;
+  }
+
+  dbHelper
+    .getUserIdForEmail(payload.email)
+    .then((user_id) => {
+      return dbHelper
+        .verifyUserToken(payload.token, user_id);
+    })
+    .then((result) => {
+      if (Number(result) > 0) {
+        res.status(200).send(JSON.stringify({ verified: true }));
+        return;
+      } else {
+        res.status(400).send(JSON.stringify({ message: "Could not find user or token!" }))
+        return;
+      }
+    })
+    .catch(res.status(500));
+}
+
 function getOrganisationInfo(req, res) {
 
 }
@@ -49,7 +85,14 @@ function loginUser(req, res) {
 
 }
 
-module.exports = {addUser, getOrganisationInfo, returnListOfOrganisations, registerNewUser, assignUserToOrganisation, createNewOrganisation, loginUser,
+module.exports = { addUser,
+                  getOrganisationInfo,
+                  returnListOfOrganisations,
+                  registerNewUser,
+                  assignUserToOrganisation,
+                  createNewOrganisation,
+                  loginUser,
+                  verifyUserToken,
   // This is to be removed soon
   postDefaultPOSTResponse : function(req, res) {
     res.status(200).send({ message : 'Welcome to the beginning of POST response!', });

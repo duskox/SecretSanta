@@ -5,7 +5,11 @@ var knex = require('knex')({
   searchPath: 'knex,public'
 });
 
-module.exports = {insertUser,insertUserToken};
+module.exports = { insertUser,
+                  insertUserToken,
+                  getUserIdForEmail,
+                  verifyUserToken
+                };
 
 // function getDBClient() {
 //   var databaseClient = null;
@@ -39,7 +43,7 @@ function insertUserToken(user_id, token) {
       return true;
     })
     .catch((err) => {
-      console.error(err)
+      console.error(err);
     });
 }
 
@@ -51,39 +55,63 @@ function insertOrganisation(name, deadline, party, location) {
       return response[0];
     })
     .catch((err) => {
-      console.error(err)
+      console.error(err);
     });
 }
 
 function joinOrganisation(user_id, organisation_id) {
   return knex('memberships')
-    .insert
+    .insert({ user_id: user_id, org_id: organisation_id })
+    then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+function isUserPartOfOrganisation(user_id) {
+  return knex.select('org_id')
+    .from('memberships')
+    .where({ user_id: user_id })
+    .then((rows) => {
+      return rows;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 
 function leaveOrganisation(user_id, organisation_id) {
-  // var dbClient = getDBClient();
-  // var query = "DELETE FROM memberships (user_id, organisation_id) VALUES (" + user_id + "," + organisation_id + ");"
-  // dbClient.query(query, function(err, result) {
-  //   if (err) {
-  //     return console.err("Could not complete query:", err);
-  //   }
-  // });
-  // dbClient.end();
+
 }
 
 function getAllUsersInOrganisation(organisation_id) {
-  // var dbClient = getDBClient();
-  // var results;
-  // var query = "SELECT * FROM memberships WHERE organisation_id =" + organisation_id + ";"
-  // dbClient.query(query, function(err, result) {
-  //   if (err) {
-  //     return console.err("Could not complete query:", err);
-  //   }
-  //   results = result;
-  //   console.log(result.rows[0].fieldName);
-  // });
-  // dbClient.end();
-  // return results;
+
+}
+
+function getUserIdForEmail(email) {
+  return knex.select('id')
+    .from('users')
+    .where({ email: email })
+    .then((rows) => {
+      return rows[0].id;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
+function verifyUserToken(user_token, user_id) {
+  return knex.count('user_id')
+    .from('user_tokens')
+    .where({ token: user_token, user_id: user_id })
+    .then((result) => {
+      return result[0].count;
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 }
 
 function getAllActiveOrganisation() {
