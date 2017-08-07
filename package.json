@@ -19,7 +19,8 @@
     "jsonwebtoken": "^7.4.2",
     "knex": "^0.13.0",
     "morgan": "^1.8.2",
-    "pg": "^7.1.0"
+    "pg": "^7.1.0",
+    "validator": "^8.0.0"
   },
   "repository": {
     "type": "git",
