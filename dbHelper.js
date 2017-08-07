@@ -8,7 +8,9 @@ var knex = require('knex')({
 module.exports = { insertUser,
                   getUserIdForEmail,
                   getUserRecord,
-                  getAllActiveOrganisations
+                  getAllActiveOrganisations,
+                  insertOrganisation,
+                  joinOrganisation
                 };
 
 function insertUser(name, email, password) {
@@ -24,12 +26,19 @@ function insertUser(name, email, password) {
     });
 }
 
-function insertOrganisation(name, deadline, party, location) {
+function insertOrganisation(name, deadline, party, location, user_id) {
   return knex('organisations')
     .insert({ name: name, deadline, deadline, party: party, location, location })
     .returning('id')
     .then((response) => {
-      return response[0];
+      //return response[0].id;
+      return knex('memberships')
+        .insert({ org_id: response[0].id, user_id: user_id })
+        .returning(org_id);
+    })
+    .then((org_id) => {
+      return knex('organisations')
+        .where('id', org_id);
     })
     .catch((err) => {
       console.error(err);
