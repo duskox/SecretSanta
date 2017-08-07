@@ -64,7 +64,34 @@ function verifyUserToken(req, res) {
 }
 
 function getOrganisationInfo(req, res) {
+  const payload = req.body;
+  console.log("Payload:", payload);
+  if (!payload.organisation_id || !payload.token) {
+    const errorMessage = { message: "Register call with invalid parameters" };
+    res.status(400).send(JSON.stringify(errorMessage));
+    return;
+  }
 
+}
+
+function verifyToken(req, res) {
+  const payload = req.body;
+  console.log("Payload:", payload);
+  if (!payload.token) {
+    const errorMessage = { message: "Register call with invalid parameters" };
+    res.status(400).send(JSON.stringify(errorMessage));
+    return;
+  }
+
+  tokenTool.validateToken(payload.token, (err, decoded) => {
+    if (err) {
+      console.error(err);
+      res.status(400).send({ tokenValid: false });
+    }
+    if (decoded) {
+      res.status(200).send({ tokenValid: true });
+    }
+  });
 }
 
 function returnListOfOrganisations(req, res) {
@@ -92,7 +119,7 @@ module.exports = { addUser,
                   assignUserToOrganisation,
                   createNewOrganisation,
                   loginUser,
-                  verifyUserToken,
+                  verifyToken,
   // This is to be removed soon
   postDefaultPOSTResponse : function(req, res) {
     res.status(200).send({ message : 'Welcome to the beginning of POST response!', });

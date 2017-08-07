@@ -7,7 +7,7 @@ router.route('/').get(santaCtrl.postDefaultGETResponse);
 router.route('/').post(santaCtrl.postDefaultPOSTResponse);
 
 router.route('/register').post(santaCtrl.addUser);
-router.route('/verify_user_token').post(santaCtrl.verifyUserToken);
+router.route('/verify').post(santaCtrl.verifyToken);
 
 router.route('/login').post();
 router.route('/create').post();
