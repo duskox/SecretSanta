@@ -17,13 +17,20 @@ function addUser(req,res) {
 
     dbHelper
       .insertUser(payload.name, payload.email, passHash)
-      .then((user_id) => {
+      .then(() => {
         return dbHelper
-          .insertUserToken(user_id, userToken);
+          .getAllActiveOrganisations();
       })
-      .then(
-        res.status(200).send(JSON.stringify({ token: userToken }))
-      )
+      .then((organisations) => {
+        var orgArr = [];
+        for ( i = 0; i < organisations.length; i++) {
+          org_id = organisations.id;
+          name = organisations.name;
+          orgArr.push({ "org_id": org_id, "name": name });
+        }
+        res.status(200).send({ token: userToken, organisations: orgArr });
+        return;
+      })
       .catch(res.status(500));
 }
 
@@ -34,33 +41,6 @@ function isUserInOrganisation(req, res) {
     res.status(400).send(JSON.stringify(errorMessage));
     return;
   }
-}
-
-function verifyUserToken(req, res) {
-  const payload = req.body;
-  console.log("Payload:", payload);
-  if (!payload.email || !payload.token) {
-    const errorMessage = { message: "Register call with invalid parameters" };
-    res.status(400).send(JSON.stringify(errorMessage));
-    return;
-  }
-
-  dbHelper
-    .getUserIdForEmail(payload.email)
-    .then((user_id) => {
-      return dbHelper
-        .verifyUserToken(payload.token, user_id);
-    })
-    .then((result) => {
-      if (Number(result) > 0) {
-        res.status(200).send(JSON.stringify({ verified: true }));
-        return;
-      } else {
-        res.status(400).send(JSON.stringify({ message: "Could not find user or token!" }))
-        return;
-      }
-    })
-    .catch(res.status(500));
 }
 
 function getOrganisationInfo(req, res) {
@@ -109,7 +89,29 @@ function createNewOrganisation(req, res) {
 
 }
 function loginUser(req, res) {
+  const payload = req.body;
+  console.log("Payload:", payload);
+  if (!payload.email || !payload.password) {
+    const errorMessage = { message: "Register call with invalid parameters" };
+    res.status(400).send(JSON.stringify(errorMessage));
+    return;
+  }
 
+  dbHelper
+    .getUserRecord(payload.email)
+    .then((row) => {
+      var passCorrect = hashTool.verifyStringWithHash(payload.password, row.password);
+      if (passCorrect) {
+
+      } else {
+        res.status(400).send({ error: "Incorrect password!" });
+        return;
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500);
+    });
 }
 
 module.exports = { addUser,

@@ -7,7 +7,8 @@ var knex = require('knex')({
 
 module.exports = { insertUser,
                   getUserIdForEmail,
-                  verifyUserToken
+                  getUserRecord,
+                  getAllActiveOrganisations
                 };
 
 function insertUser(name, email, password) {
@@ -78,14 +79,25 @@ function getUserIdForEmail(email) {
     });
 }
 
-function getAllActiveOrganisation() {
-  var result;
-
-  return result;
+function getAllActiveOrganisations() {
+  return knex('organisations')
+          .then((rows) => {
+            return rows;
+          })
+          .catch((err) => {
+            console.error(err);
+          });
 }
 
-function verifyUser(email, password) {
-
+function getUserRecord(email) {
+  return knex('users')
+          .where('email', email)
+          .then((rows) => {
+            return rows[0];
+          })
+          .catch((err) => {
+            console.error(err);
+          });
 }
 
 function getOrganisationDetails(org_id) {
@@ -93,5 +105,5 @@ function getOrganisationDetails(org_id) {
 }
 
 function insertSantaKidPair(santa_user_id, kid_user_id, org_id) {
-  
+
 }
