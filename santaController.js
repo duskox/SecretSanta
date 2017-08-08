@@ -86,7 +86,7 @@ function registerNewUser(req, res) {
 function assignUserToOrganisation(req, res) {
 
 }
-function createNewOrganisationAndAddUserToIt(req, res) {
+function createOrganisationAddUserToIt(req, res) {
   const payload = req.body;
   console.log("Payload:", payload);
   if (!payload.email ||
@@ -101,17 +101,17 @@ function createNewOrganisationAndAddUserToIt(req, res) {
     return;
   }
 
-  if(!validator.isEmail(email)) {
+  if(!validator.isEmail(payload.email)) {
     res.status(400).send({ message: "Invalid email!" });
     return;
   }
 
-  if(!validator.isISO8601(deadline)) {
+  if(!validator.isISO8601(payload.deadline)) {
     res.status(400).send({ message: "Invalid deadline date!" });
     return;
   }
 
-  if(!validator.isISO8601(party)) {
+  if(!validator.isISO8601(payload.party)) {
     res.status(400).send({ message: "Invalid party date!" });
     return;
   }
@@ -167,7 +167,7 @@ module.exports = { addUser,
                   returnListOfOrganisations,
                   registerNewUser,
                   assignUserToOrganisation,
-                  createNewOrganisationAndAddUserToIt,
+                  createOrganisationAddUserToIt,
                   loginUser,
                   verifyToken,
   // This is to be removed soon
