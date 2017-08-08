@@ -28,7 +28,6 @@ function addUser(req,res) {
           .getAllActiveOrganisations();
       })
       .then((organisations) => {
-        console.log("Orgs:", organisations);
         res.status(200).send({ token: userToken, organisations: organisations });
         return;
       })
@@ -41,10 +40,9 @@ function isUserInOrganisation(req, res) {
 
 function getOrganisationInfo(req, res) {
   const payload = req.body;
-  console.log("Payload:", payload);
   if (!payload.organisation_id || !payload.token) {
     const errorMessage = { message: "Register call with invalid parameters" };
-    res.status(400).send(JSON.stringify(errorMessage));
+    res.status(400).send(errorMessage);
     return;
   }
 
@@ -52,10 +50,9 @@ function getOrganisationInfo(req, res) {
 
 function verifyToken(req, res) {
   const payload = req.body;
-  console.log("Payload:", payload);
   if (!payload.token) {
     const errorMessage = { message: "Register call with invalid parameters" };
-    res.status(400).send(JSON.stringify(errorMessage));
+    res.status(400).send(errorMessage);
     return;
   }
 
@@ -83,7 +80,6 @@ function assignUserToOrganisation(req, res) {
 }
 function createOrganisationAddUserToIt(req, res) {
   const payload = req.body;
-  console.log("Payload:", payload);
   if (!payload.email ||
       !payload.token ||
       !payload.name ||
@@ -92,7 +88,7 @@ function createOrganisationAddUserToIt(req, res) {
       !payload.location
     ) {
     const errorMessage = { message: "Register call with invalid parameters" };
-    res.status(400).send(JSON.stringify(errorMessage));
+    res.status(400).send(errorMessage);
     return;
   }
 
@@ -131,7 +127,6 @@ function createOrganisationAddUserToIt(req, res) {
 
 function loginUser(req, res) {
   const payload = req.body;
-  console.log("Payload:", payload);
   if (!payload.email || !payload.password) {
     const errorMessage = { message: "Register call with invalid parameters" };
     res.status(400).send(JSON.stringify(errorMessage));
