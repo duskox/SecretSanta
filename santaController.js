@@ -28,13 +28,8 @@ function addUser(req,res) {
           .getAllActiveOrganisations();
       })
       .then((organisations) => {
-        var orgArr = [];
-        for ( i = 0; i < organisations.length; i++) {
-          org_id = organisations.id;
-          name = organisations.name;
-          orgArr.push({ "org_id": org_id, "name": name });
-        }
-        res.status(200).send({ token: userToken, organisations: orgArr });
+        console.log("Orgs:", organisations);
+        res.status(200).send({ token: userToken, organisations: organisations });
         return;
       })
       .catch(res.status(500));
