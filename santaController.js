@@ -147,13 +147,32 @@ function loginUser(req, res) {
     .getUserRecord(payload.email)
     .then((row) => {
       var passCorrect = hashTool.verifyStringWithHash(payload.password, row.password);
-      if (passCorrect) {
-        // TODO: check if part of Organisation
-        // YES: then return details of the organisation
-        // NO: return token and list of organisations
-      } else {
+      if (!passCorrect) {
         res.status(400).send({ error: "Incorrect password!" });
         return;
+      }
+      return dbHelper.isUserPartOfOrganisation(row.id); // check if part of Organisation
+      }
+    )
+    .then((membershipRows) => {
+      if(membershipRows.length > 0) {
+        // YES: then return details of the organisation and token
+        var userToken = tokenTool.getTokenForUserEmail(payload.email);
+        dbHelper.getOrganisationDetails(membershipRows[0].org_id)
+              .then((organisationDetails) => {
+                res.status(200).send({ "token": userToken, "organisation": organisationDetails })
+                return;
+              })
+              .catch((err) => console.error(err));
+      } else {
+        // NO: return list of organisations and token
+        var userToken = tokenTool.getTokenForUserEmail(payload.email);
+        dbHelper.getAllActiveOrganisations()
+              .then((organisations) => {
+                res.status(200).send({ "token": userToken, "organisations": organisations });
+                return;
+              })
+              .catch((err) => console.error(err));
       }
     })
     .catch((err) => {
