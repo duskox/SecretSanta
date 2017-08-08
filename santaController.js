@@ -3,7 +3,7 @@ var reqUtil = require('./utils/requestUtils');
 var hashTool = require('./utils/hashTool');
 var tokenTool = require('./utils/tokenTool');
 var dbHelper = require('./dbHelper');
-var validator = require('validtor');
+var validator = require('validator');
 
 function addUser(req,res) {
   const payload = req.body;
