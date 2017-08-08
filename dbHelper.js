@@ -18,7 +18,6 @@ function insertUser(name, email, password) {
     .insert({ email: email, name: name, password: password })
     .returning('id')
     .then((response) => {
-      console.log("USER_ID:", response[0]);
       return response[0];
     })
     .catch((err) => {
@@ -31,14 +30,13 @@ function insertOrganisation(name, deadline, party, location, user_id) {
     .insert({ name: name, deadline, deadline, party: party, location, location })
     .returning('id')
     .then((response) => {
-      //return response[0].id;
       return knex('memberships')
-        .insert({ org_id: response[0].id, user_id: user_id })
-        .returning(org_id);
+        .insert({ org_id: response[0], user_id: user_id })
+        .returning('org_id');
     })
     .then((org_id) => {
       return knex('organisations')
-        .where('id', org_id);
+        .where('id', org_id[0]);
     })
     .catch((err) => {
       console.error(err);
