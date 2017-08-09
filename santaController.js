@@ -60,9 +60,53 @@ function verifyToken(req, res) {
     if (err) {
       console.error(err);
       res.status(400).send({ tokenValid: false });
+      return;
     }
     if (decoded) {
       res.status(200).send({ tokenValid: true });
+      return;
+    }
+  });
+}
+
+function leaveOrganisation(req, res) {
+  const payload = req.body;
+  if (!payload.organisation_id || !payload.user_id || !payload.token) {
+    const errorMessage = { message: "Leave organisation call with invalid parameters" };
+    res.status(400).send(errorMessage);
+    return;
+  }
+
+  tokenTool.validateToken(payload.token, (err, decoded) => {
+    if (err) {
+      console.error(err);
+      res.status(400).send({ tokenValid: false });
+    }
+    if (decoded) {
+      var email = decoded;
+      var user_id;
+      dbHelper.getUserIdForEmail(email)
+      .then((userId) => {
+        user_id = userId;
+        return dbHelper.getOrganisationDetails(payload.organisation_id);
+      })
+      .then((organisation) => {
+        var deadlineDate = new Date(organisation.deadline);
+        var today = new Date();
+        if(today > deadlineDate) {
+          return;
+        } else {
+          return dbHelper.leaveOrganisation(payload.user_id, payload.organisation_id);
+        }
+      })
+      .then(() => {
+        return dbHelper.getAllActiveOrganisations();
+      })
+      .then((organisations) => {
+        res.status(200).send({ "organisations": organisations });
+        return;
+      })
+      .catch((err) => console.error(err));
     }
   });
 }
@@ -78,6 +122,7 @@ function registerNewUser(req, res) {
 function assignUserToOrganisation(req, res) {
 
 }
+
 function createOrganisationAddUserToIt(req, res) {
   const payload = req.body;
   if (!payload.email ||
@@ -179,6 +224,7 @@ module.exports = { addUser,
                   createOrganisationAddUserToIt,
                   loginUser,
                   verifyToken,
+                  leaveOrganisation,
   // This is to be removed soon
   postDefaultPOSTResponse : function(req, res) {
     res.status(200).send({ message : 'Welcome to the beginning of POST response!', });

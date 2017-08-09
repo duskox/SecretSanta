@@ -10,10 +10,10 @@ router.route('/register').post(santaCtrl.addUser);
 router.route('/verify').post(santaCtrl.verifyToken);
 router.route('/create').post(santaCtrl.createOrganisationAddUserToIt);
 router.route('/login').post(santaCtrl.loginUser);
+router.route('/leave').post(santaCtrl.leaveOrganisation);
 
 router.route('/join').post();
 router.route('/list').post();
 router.route('/organisation').post();
-router.route('/leave').post();
 
 module.exports = router;

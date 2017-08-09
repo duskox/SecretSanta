@@ -12,7 +12,8 @@ module.exports = { insertUser,
                   insertOrganisation,
                   joinOrganisation,
                   isUserPartOfOrganisation,
-                  getOrganisationDetails
+                  getOrganisationDetails,
+                  leaveOrganisation
                 };
 
 function insertUser(name, email, password) {
@@ -108,9 +109,7 @@ function getOrganisationDetails(org_id) {
           .then((rows) => {
             return rows[0];
           })
-          .catch((err) => {
-            console.error(err);
-          });
+          .catch((err) => console.error(err));
 }
 
 function insertSantaKidPair(santa_user_id, kid_user_id, org_id) {
@@ -118,7 +117,14 @@ function insertSantaKidPair(santa_user_id, kid_user_id, org_id) {
 }
 
 function leaveOrganisation(user_id, organisation_id) {
-
+  return knex('memberships')
+    .where('user_id', user_id)
+    .andWhere('org_id', organisation_id)
+    .del()
+    .then((rowsDeleted) => {
+      return rowsDeleted;
+    })
+    .catch((err) => console.error(err));
 }
 
 function getAllUsersInOrganisation(organisation_id) {
