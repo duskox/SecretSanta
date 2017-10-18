@@ -7,7 +7,8 @@
   },
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -20,6 +21,7 @@
     "knex": "^0.13.0",
     "morgan": "^1.8.2",
     "pg": "^7.1.0",
+    "react-html-document": "^3.1.0",
     "validator": "^8.0.0"
   },
   "repository": {
