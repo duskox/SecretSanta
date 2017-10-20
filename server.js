@@ -11,12 +11,13 @@ var app = express();
 app.use(bodyParser.json());
 
 app.use('/santAPI', santaApiRoutes);
-app.set('port', (process.env.PORT || 5000));
+app.use(express.static(__dirname + '/public'));
+app.set('port', (process.env.PORT || 80));
 
 // Setup logging requests to console
 app.use(logger('dev'));
 
-app.use(express.static(__dirname + '/public'));
+
 
 // views is directory for all template files
 app.set('views', __dirname + '/views');
