@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 
 app.use('/santAPI', santaApiRoutes);
 app.use(express.static(__dirname + '/public'));
-app.set('port', (process.env.PORT || 5000));
+app.set('port', (process.env.PORT || 80));
 
 // Setup logging requests to console
 app.use(logger('dev'));
