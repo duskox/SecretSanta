@@ -2,6 +2,7 @@ var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var santaApiRoutes = require('./santApiRoutes');
+var http = require('http');
 
 // *********************
 // Setup the EXPRESS app
@@ -12,7 +13,7 @@ app.use(bodyParser.json());
 
 app.use('/santAPI', santaApiRoutes);
 app.use(express.static(__dirname + '/public'));
-app.set('port', (process.env.PORT || 80));
+app.set('port', (process.env.PORT || 5000));
 
 // Setup logging requests to console
 app.use(logger('dev'));
@@ -30,3 +31,5 @@ app.get('/', function(request, response) {
 app.listen(app.get('port'), function() {
   console.log('Node app is running on port', app.get('port'));
 });
+
+http.createServer(app);
