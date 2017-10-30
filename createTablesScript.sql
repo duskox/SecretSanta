@@ -1,9 +1,16 @@
 CREATE TABLE users (
   id bigserial PRIMARY KEY,
   email varchar(255) NOT NULL UNIQUE, -- could be primary key
-  password char(60) NOT NULL, -- this is encrypted, hash will be 60 chars long
-  name varchar(255) NOT NULL
+  name varchar(255) NOT NULL,
+  first_name varchar(255) NOT NULL,
+  last_name varchar(255) NOT NULL,
+  server_auth_code varchar(255),
+  access_token varchar(255)
 );
+
+ALTER TABLE users DROP COLUMN password;
+-- below is the password field that was a part of users table but was deleted by above command
+-- password char(60) NOT NULL,
 
 CREATE TABLE user_tokens (
   user_id bigint NOT NULL,
@@ -61,3 +68,7 @@ CREATE TABLE obsolete_secretsantas (
 );
 
 -- To create tables from this locally do: psql <database> < createTablesScript.sql
+-- or in psql cli do the following:
+-- 1. \e to edit the buffer (vi should open)
+-- 2. copy paste these create table (or any other) statements
+-- 3. upon saving they are executed.

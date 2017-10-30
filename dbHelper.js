@@ -16,9 +16,9 @@ module.exports = { insertUser,
                   leaveOrganisation
                 };
 
-function insertUser(name, email, password) {
+function insertUser(name, email, firstName, lastName, accessToken, serverAuthCode) {
   return knex('users')
-    .insert({ email: email, name: name, password: password })
+    .insert({ email: email, name: name,  first_name: firstName, last_name: lastName, access_token: accessToken, server_auth_code: serverAuthCode})
     .returning('id')
     .then((response) => {
       return response[0];
