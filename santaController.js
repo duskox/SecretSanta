@@ -3,7 +3,27 @@ var reqUtil = require('./utils/requestUtils');
 var hashTool = require('./utils/hashTool');
 var tokenTool = require('./utils/tokenTool');
 var dbHelper = require('./dbHelper');
-var validator = require('validator');
+var util = require('./utils/util');
+
+module.exports = { addUser,
+  getOrganisationInfo,
+  returnListOfOrganisations,
+  registerNewUser,
+  assignUserToOrganisation,
+  createOrganisationAddUserToIt,
+  loginUser,
+  verifyToken,
+  leaveOrganisation,
+  setUser,
+  insertUser,
+// This is to be removed soon
+postDefaultPOSTResponse : function(req, res) {
+res.status(200).send({ message : 'Welcome to the beginning of POST response!', });
+},
+postDefaultGETResponse : function (req, res) {
+res.status(200).send({ message : 'Welcome to the beginning of GET response!', });
+}
+}
 
 function addUser(req,res) {
   const payload = req.body;
@@ -30,6 +50,63 @@ function addUser(req,res) {
       .then((organisations) => {
         res.status(200).send({ token: userToken, organisations: organisations });
         return;
+      })
+      .catch(res.status(500));
+}
+
+// Temporary method, just for testing
+function insertUser(req,res) {
+  const payload = req.body;
+  console.log("BLAAAAAAAAAAAAAAAA:", payload);
+  dbHelper.insertUser(payload.name, payload.email, payload.firstName, payload.lastName, payload.accessToken, payload.serverAuthCode)
+    .then((result) => {
+      console.log("Rezultat:", result);
+      res.status(200).send({ user_id: result });
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500);
+    });
+}
+
+function setUser(req,res) {
+  const payload = req.body;
+    if (!payload.email && !payload.name && !payload.accessToken && !payload.serverAuthCode && !payload.firstName && !payload.lastName) {
+      const errorMessage = { message: "Call with invalid parameters!" };
+      res.status(400).send(errorMessage);
+      return;
+    }
+
+    if (!util.validateEmail(payload.email)) {
+      res.status(400).send({ message: "Invalid email!" });
+      return;
+    }
+
+    dbHelper.getUserIdForEmail(payload.email)
+      .then((id) => {
+        if (id === -1) {
+          return dbHelper
+            .insertUser(payload.name, payload.email, payload.firstName, payload.lastName, payload.accessToken, payload.serverAuthCode);
+        } else {
+          return dbHelper
+            .updateUser(payload.name, payload.email, payload.firstName, payload.lastName, payload.accessToken, payload.serverAuthCode);
+        }
+      })
+      .then((id) => {
+        return dbHelper.isUserPartOfOrganisation(id)
+      })
+      .then((result) => {
+        if (result === -1) {
+          dbHelper.getAllActiveOrganisations()
+            .then((organisations) => {
+              res.status(200).send({ organisations: organisations });
+              return;
+            })
+        } else {
+          console.log("Organisations result:", result);
+          res.status(200).send({ organisations: result });
+          return;
+        }
       })
       .catch(res.status(500));
 }
@@ -214,22 +291,4 @@ function loginUser(req, res) {
       console.error(err);
       res.status(500);
     });
-}
-
-module.exports = { addUser,
-                  getOrganisationInfo,
-                  returnListOfOrganisations,
-                  registerNewUser,
-                  assignUserToOrganisation,
-                  createOrganisationAddUserToIt,
-                  loginUser,
-                  verifyToken,
-                  leaveOrganisation,
-  // This is to be removed soon
-  postDefaultPOSTResponse : function(req, res) {
-    res.status(200).send({ message : 'Welcome to the beginning of POST response!', });
-  },
-  postDefaultGETResponse : function (req, res) {
-    res.status(200).send({ message : 'Welcome to the beginning of GET response!', });
-  }
 }

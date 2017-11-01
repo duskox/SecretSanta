@@ -13,6 +13,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.17.2",
+    "dotenv": "^4.0.0",
     "ejs": "2.5.6",
     "express": "4.16.2",
     "google-auth-library": "^0.10.0",
@@ -21,8 +22,7 @@
     "knex": "^0.13.0",
     "morgan": "^1.8.2",
     "pg": "^7.1.0",
-    "react-html-document": "^3.1.0",
-    "validator": "^8.0.0"
+    "react-html-document": "^3.1.0"
   },
   "repository": {
     "type": "git",

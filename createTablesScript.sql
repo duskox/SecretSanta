@@ -8,10 +8,6 @@ CREATE TABLE users (
   access_token varchar(255)
 );
 
-ALTER TABLE users DROP COLUMN password;
--- below is the password field that was a part of users table but was deleted by above command
--- password char(60) NOT NULL,
-
 CREATE TABLE user_tokens (
   user_id bigint NOT NULL,
   token varchar(255),
