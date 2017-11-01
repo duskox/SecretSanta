@@ -16,6 +16,7 @@ module.exports = { addUser,
   leaveOrganisation,
   setUser,
   insertUser,
+  joinOrganisation,
 // This is to be removed soon
 postDefaultPOSTResponse : function(req, res) {
 res.status(200).send({ message : 'Welcome to the beginning of POST response!', });
@@ -82,14 +83,12 @@ function setUser(req,res) {
       return;
     }
 
+    console.log("Before getID:", payload.email);
     dbHelper.getUserIdForEmail(payload.email)
       .then((id) => {
         if (id === -1) {
           return dbHelper
             .insertUser(payload.name, payload.email, payload.firstName, payload.lastName, payload.accessToken, payload.serverAuthCode);
-        } else {
-          return dbHelper
-            .updateUser(payload.name, payload.email, payload.firstName, payload.lastName, payload.accessToken, payload.serverAuthCode);
         }
       })
       .then((id) => {
@@ -245,6 +244,29 @@ function createOrganisationAddUserToIt(req, res) {
       res.status(500);
     })
 
+}
+
+function joinOrganisation(req, res) {
+  const payload = req.body;
+  if (!payload.user_id ||
+    !payload.organisation_id
+  ) {
+    const errorMessage = { message: "Register call with invalid parameters" };
+    res.status(400).send(errorMessage);
+    return;
+  }
+
+  dbHelper.joinOrganisation(payload.user_id, payload.organisation_id)
+    .then((result) => {
+      console.log("RES:", result);
+      res.status(200).send(result);
+      return;
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500);
+      return;
+    });
 }
 
 function loginUser(req, res) {

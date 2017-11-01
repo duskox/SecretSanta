@@ -69,10 +69,8 @@ function findAndUpdateUserData(name, email, firstName, lastName, accessToken, se
 
 function getUserIdForEmail(email) {
   console.log("In getUserIdForEmail");
-  console.log("Environment:", process.env.DATABASE_URL);
-  return knex.select('id')
-    .from('users')
-    .where({ email: email })
+  return knex('users').where({ email: email })
+    .select('id')
     .then((rows) => {
       if (rows.length === 0) {
         return -1;
@@ -88,14 +86,15 @@ function getUserIdForEmail(email) {
 function updateUser(name, email, firstName, lastName, accessToken, serverAuthCode) {
   console.log("In updateUser");
   return knex('users')
-    .where('email', '=', email)
+    .where({ email: email})
     .update({
       name: name,
       first_name: firstName,
       last_name: lastName,
       access_token: accessToken,
       server_auth_code: serverAuthCode
-    });
+    })
+    .returning('id');
 }
 
 function getUserRecord(email) {
@@ -142,7 +141,7 @@ function insertOrganisation(name, deadline, party, location, user_id) {
 function joinOrganisation(user_id, organisation_id) {
   console.log("In joinOrganisation");
   return knex('memberships')
-    .insert({ user_id: user_id, org_id: organisation_id })
+    .insert({ user_id: user_id, org_id: organisation_id, validity_date: '2099-01-01' })
     then((response) => {
       return response;
     })

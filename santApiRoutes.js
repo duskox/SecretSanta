@@ -15,7 +15,7 @@ router.route('/setuser').post(santaCtrl.setUser);
 
 router.route('/insertuser').post(santaCtrl.insertUser);
 
-router.route('/join').post();
+router.route('/join').post(santaCtrl.joinOrganisation);
 router.route('/list').post();
 router.route('/organisation').post();
 
