@@ -7,13 +7,13 @@ var util = require('./utils/util');
 
 module.exports = {
   // addUser,
-  getOrganisationInfo,
+  // getOrganisationInfo,
   registerNewUser,
-  listOfOrganisations,
+  // listOfOrganisations,
   assignUserToOrganisation,
   createOrganisationAddUserToIt,
   // loginUser,
-  verifyToken,
+  // verifyToken,
   leaveOrganisation,
   setUser,
   // insertUser,
@@ -117,77 +117,106 @@ function setUser(req,res) {
       });
 }
 
-function getOrganisationInfo(req, res) {
-  const payload = req.body;
-  if (!payload.organisation_id || !payload.token) {
-    const errorMessage = { message: "Register call with invalid parameters" };
-    res.status(400).send(errorMessage);
-    return;
-  }
+// function getOrganisationInfo(req, res) {
+//   const payload = req.body;
+//   if (!payload.organisation_id || !payload.token) {
+//     const errorMessage = { message: "Register call with invalid parameters" };
+//     res.status(400).send(errorMessage);
+//     return;
+//   }
 
-}
+// }
 
-function verifyToken(req, res) {
-  const payload = req.body;
-  if (!payload.token) {
-    const errorMessage = { message: "Register call with invalid parameters" };
-    res.status(400).send(errorMessage);
-    return;
-  }
+// function verifyToken(req, res) {
+//   const payload = req.body;
+//   if (!payload.token) {
+//     const errorMessage = { message: "Register call with invalid parameters" };
+//     res.status(400).send(errorMessage);
+//     return;
+//   }
 
-  tokenTool.validateToken(payload.token, (err, decoded) => {
-    if (err) {
-      console.error(err);
-      res.status(400).send({ tokenValid: false });
-      return;
-    }
-    if (decoded) {
-      res.status(200).send({ tokenValid: true });
-      return;
-    }
-  });
-}
+//   tokenTool.validateToken(payload.token, (err, decoded) => {
+//     if (err) {
+//       console.error(err);
+//       res.status(400).send({ tokenValid: false });
+//       return;
+//     }
+//     if (decoded) {
+//       res.status(200).send({ tokenValid: true });
+//       return;
+//     }
+//   });
+// }
 
 function leaveOrganisation(req, res) {
   const payload = req.body;
-  if (!payload.organisation_id || !payload.user_id || !payload.token) {
+  if (!payload.email ||
+    !payload.organisation_id ||
+    !payload.accessToken ||
+    !payload.serverAuthCode
+  ) {
     const errorMessage = { message: "Leave organisation call with invalid parameters" };
     res.status(400).send(errorMessage);
     return;
   }
 
-  tokenTool.validateToken(payload.token, (err, decoded) => {
-    if (err) {
-      console.error(err);
-      res.status(400).send({ tokenValid: false });
-    }
-    if (decoded) {
-      var email = decoded;
-      var user_id;
-      dbHelper.getUserIdForEmail(email)
-      .then((userId) => {
-        user_id = userId;
-        return dbHelper.getOrganisationDetails(payload.organisation_id);
-      })
-      .then((organisation) => {
-        var deadlineDate = new Date(organisation.deadline);
-        var today = new Date();
-        if(today > deadlineDate) {
-          return;
-        } else {
-          return dbHelper.leaveOrganisation(payload.user_id, payload.organisation_id);
-        }
-      })
-      .then(() => {
-        return dbHelper.getAllActiveOrganisations();
-      })
-      .then((organisations) => {
-        res.status(200).send({ "organisations": organisations });
-        return;
-      })
-      .catch((err) => console.error(err));
-    }
-  });
+  // here a check of token shoudl go
+
+  dbHelper.getUserIdForEmail(payload.email)
+    .then((user_id) => {
+      return dbHelper.leaveOrganisation(user_id, payload.organisation_id)
+    })
+    .then((result) => {
+      // console.log("Result of leaving organisation:", result)
+      if (result === -1) {
+        res.status(500);
+        return -1
+      }
+      return dbHelper.getAllActiveOrganisations()
+    })
+    .then((active_organisations) => {
+      // console.log("getAllActiveOrganisations result:", active_organisations);
+      res.status(200).send(active_organisations);
+    })
+    .catch((err) => {
+      // console.log("santaController.leaveOrganisation err:", err)
+      res.status(500);
+      return;
+    });
+
+  // OLD CODE - where I had my own user token, not google one
+  // tokenTool.validateToken(payload.token, (err, decoded) => {
+  //   if (err) {
+  //     console.error(err);
+  //     res.status(400).send({ tokenValid: false });
+  //   }
+  //   if (decoded) {
+  //     var email = decoded;
+  //     var user_id;
+  //     dbHelper.getUserIdForEmail(email)
+  //     .then((userId) => {
+  //       user_id = userId;
+  //       return dbHelper.getOrganisationDetails(payload.organisation_id);
+  //     })
+  //     .then((organisation) => {
+  //       var deadlineDate = new Date(organisation.deadline);
+  //       var today = new Date();
+  //       if(today > deadlineDate) {
+  //         return;
+  //       } else {
+  //         return dbHelper.leaveOrganisation(payload.user_id, payload.organisation_id);
+  //       }
+  //     })
+  //     .then(() => {
+  //       return dbHelper.getAllActiveOrganisations();
+  //     })
+  //     .then((organisations) => {
+  //       res.status(200).send({ "organisations": organisations });
+  //       return;
+  //     })
+  //     .catch((err) => console.error(err));
+  //   }
+  // });
 }
 
 function listOfOrganisations(req, res) {
@@ -284,19 +313,19 @@ function joinOrganisation(req, res) {
       console.log("santaController.joinOrganisation err:", err)
       res.status(500);
       return;
-    })
-
-  dbHelper.joinOrganisation(payload.user_id, payload.organisation_id)
-    .then((result) => {
-      console.log("RES:", result);
-      res.status(200).send(result);
-      return;
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500);
-      return;
     });
+
+  // dbHelper.joinOrganisation(payload.user_id, payload.organisation_id)
+  //   .then((result) => {
+  //     console.log("RES:", result);
+  //     res.status(200).send(result);
+  //     return;
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //     res.status(500);
+  //     return;
+  //   });
 }
 
 // function loginUser(req, res) {
