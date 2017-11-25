@@ -1,14 +1,7 @@
 var postgresDB = require('pg');
 var knex = require('knex')({
   client: 'pg',
-  // connection: process.env.DATABASE_URL,
-  connection: {
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    database: process.env.DB_NAME
-  },
+  connection: process.env.DATABASE_URL,
   searchPath: 'knex,public',
   debug: true,
   ssl: true,
@@ -36,12 +29,6 @@ module.exports = { insertUser,
  */
 
 function insertUser(name, email, firstName, lastName, accessToken, serverAuthCode) {
-  console.log("In insertUser");
-  console.log('HOST:', process.env.DB_HOST);
-  console.log('NAME:', process.env.DB_NAME);
-  console.log('USER:', process.env.DB_USER);
-  console.log('PASS:', process.env.DB_PASS);
-  console.log('PORT:', process.env.DB_PORT);
   return knex('users')
     .insert({ email: email, name: name,  first_name: firstName, last_name: lastName, access_token: accessToken, server_auth_code: serverAuthCode})
     .returning('id')
@@ -68,13 +55,14 @@ function findAndUpdateUserData(name, email, firstName, lastName, accessToken, se
 }
 
 function getUserIdForEmail(email) {
-  console.log("In getUserIdForEmail");
   return knex('users').where({ email: email })
     .select('id')
     .then((rows) => {
       if (rows.length === 0) {
+        console.log("Returning -1")
         return -1;
       }
+      console.log("Returning:", rows[0])
       return rows[0].id;
     })
     .catch((err) => {
@@ -143,15 +131,18 @@ function joinOrganisation(user_id, organisation_id) {
   return knex('memberships')
     .insert({ user_id: user_id, org_id: organisation_id, validity_date: '2099-01-01' })
     then((response) => {
+      console.log("joinOrganisation response success:", response);
       return response;
     })
     .catch((err) => {
       console.error(err);
+      throw err;
+      return -1;
     });
 }
 
 function isUserPartOfOrganisation(user_id) {
-  console.log("In isUserPartOfOrganisation");
+  console.log("In isUserPartOfOrganisation user_id:", user_id);
   return knex.select('org_id')
     .from('memberships')
     .where({ user_id: user_id })

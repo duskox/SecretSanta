@@ -1,10 +1,9 @@
+require('dotenv').config();
 var express = require('express');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var santaApiRoutes = require('./santApiRoutes');
 var http = require('http');
-
-require('dotenv').config();
 
 // *********************
 // Setup the EXPRESS app
