@@ -106,10 +106,13 @@ function setUser(req,res) {
               return;
             })
         } else {
-          console.log("Organisations result:", result);
-          res.status(200).send({ organisations: result });
-          return;
+          const orgId = result[0]
+          return dbHelper.getOrganisationDetails(orgId)
         }
+      })
+      .then((orgDetails) => {
+        res.status(200).send(orgDetails)
+        return
       })
       .catch((err) => {
         console.log("Error: ", err)
