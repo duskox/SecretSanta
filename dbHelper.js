@@ -15,7 +15,12 @@ module.exports = { insertUser,
                   joinOrganisation,
                   isUserPartOfOrganisation,
                   getOrganisationDetails,
-                  leaveOrganisation
+                  leaveOrganisation,
+                  insertSantaKidPair,
+                  getAllUsersInOrganisation,
+                  getSecretSantaPairForUserId,
+                  getUserForId,
+                  getKidName
                 };
 
 /*
@@ -102,11 +107,55 @@ function getSecretSantaPairForUserId(userId) {
   return knex('secretsantas')
     .where('santa_user_id', userId)
     .then((rows) => {
-      return rows[0];
+      console.log("U DB helperu, rows u secretsantapairs:", rows)
+      return rows;
     })
     .catch((err) => {
       console.error(err);
     });
+}
+
+function getUserForId(userId) {
+  console.log("In getUserForId");
+  return knex('users')
+    .where('id', userId)
+    .then((rows) => {
+      return rows;
+    })
+    .catch((err) => {
+      console.error(err);
+      throw err;
+    })
+}
+
+function getKidName(santaId) {
+  console.log("In getKidName")
+  return new Promise((resolve, reject) => {
+    getSecretSantaPairForUserId(santaId)
+    .then((result) => {
+      console.log("In getKidName RESULT:", result)
+      if (result.length < 1) {
+        console.log("RESOLVING 1")
+        resolve(-1);
+      } else {
+        getUserForId(result[0].kid_user_id)
+          .then((result) => {
+            console.log("RESOLVING 2", result)
+            resolve(result)
+          })
+          .catch((err) => {
+            console.log("REJECTING 1")
+            reject(err)
+          })
+      }
+    })
+    .catch((err) => {
+      console.log("REJECTING 2")
+      console.log("Error",err)
+      reject(err)
+    })
+  })
+
 }
 
 /*
