@@ -62,7 +62,10 @@ function setUser(req,res) {
               resolve(id);
             } else {
               console.log("SALJEM REPLY:", result)
-              res.status(200).send(result[0])
+              const formattedResponse = {
+                kid_name: result[0].name,
+              }
+              res.status(200).send(formattedResponse)
               reject()
             }
           })
