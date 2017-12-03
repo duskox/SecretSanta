@@ -97,6 +97,18 @@ function getUserRecord(email) {
     });
 }
 
+function getSecretSantaPairForUserId(userId) {
+  console.log("In getSecretSantaPairForUserId");
+  return knex('secretsantas')
+    .where('santa_user_id', userId)
+    .then((rows) => {
+      return rows[0];
+    })
+    .catch((err) => {
+      console.error(err);
+    });
+}
+
 /*
  *     #######
  *     #     # #####   ####    ##   #    # #  ####    ##   ##### #  ####  #    #  ####
@@ -191,9 +203,30 @@ function leaveOrganisation(user_id, organisation_id) {
 
 
 function getAllUsersInOrganisation(organisation_id) {
-
+  console.log("In getAllUsersInOrganisation");
+  return knex('memberships')
+    .where('org_id', organisation_id)
+    then((response) => {
+      return response;
+    })
+    .catch((err) => {
+      console.error(err);
+      throw err;
+      return -1;
+    });
 }
 
 function insertSantaKidPair(santa_user_id, kid_user_id, org_id) {
-
+  console.log("In insertSantaKidPair");
+  return knex('secretsantas')
+    .insert({ santa_user_id: santa_user_id, kid_user_id: kid_user_id, org_id: org_id })
+    then((response) => {
+      console.log("insertSantaKidPair response success:", response);
+      return response;
+    })
+    .catch((err) => {
+      console.error(err);
+      throw err;
+      return -1;
+    });
 }
