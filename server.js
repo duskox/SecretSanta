@@ -9,6 +9,13 @@ var http = require('http');
 // Setup the EXPRESS app
 var app = express();
 
+//Enabling CORS - REMOVE THIS IN PRODUCTION OR SET TO CERTAIN DOMAINS!
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 // Parse incoming requests data
 app.use(bodyParser.json());
 
