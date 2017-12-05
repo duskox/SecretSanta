@@ -29,6 +29,7 @@ res.status(200).send({ message : 'Welcome to the beginning of GET response!', })
 
 
 function setUser(req,res) {
+  console.log("SETTING USER!!!!--------------------------")
   const payload = req.body;
     if (!payload.email && !payload.name && !payload.accessToken && !payload.serverAuthCode && !payload.firstName && !payload.lastName) {
       const errorMessage = { message: "Call with invalid parameters!" };
@@ -44,6 +45,7 @@ function setUser(req,res) {
     console.log("Before getID:", payload);
     dbHelper.getUserIdForEmail(payload.email)
       .then((id) => {
+        console.log("id:", id)
         if (id === -1) {
           return dbHelper
             .insertUser(payload.name, payload.email, payload.firstName, payload.lastName, payload.accessToken, payload.serverAuthCode);
@@ -122,6 +124,7 @@ function leaveOrganisation(req, res) {
 
   dbHelper.getUserIdForEmail(payload.email)
     .then((user_id) => {
+      console.log("USER_ID:", user_id)
       return dbHelper.leaveOrganisation(user_id, payload.organisation_id)
     })
     .then((result) => {
@@ -143,52 +146,52 @@ function leaveOrganisation(req, res) {
     });
 }
 
-function createOrganisationAddUserToIt(req, res) {
-  const payload = req.body;
-  if (!payload.email ||
-      !payload.token ||
-      !payload.name ||
-      !payload.deadline ||
-      !payload.party ||
-      !payload.location
-    ) {
-    const errorMessage = { message: "Register call with invalid parameters" };
-    res.status(400).send(errorMessage);
-    return;
-  }
+// function createOrganisationAddUserToIt(req, res) {
+//   const payload = req.body;
+//   if (!payload.email ||
+//       !payload.token ||
+//       !payload.name ||
+//       !payload.deadline ||
+//       !payload.party ||
+//       !payload.location
+//     ) {
+//     const errorMessage = { message: "Register call with invalid parameters" };
+//     res.status(400).send(errorMessage);
+//     return;
+//   }
 
-  if(!validator.isEmail(payload.email)) {
-    res.status(400).send({ message: "Invalid email!" });
-    return;
-  }
+//   if(!validator.isEmail(payload.email)) {
+//     res.status(400).send({ message: "Invalid email!" });
+//     return;
+//   }
 
-  if(!validator.isISO8601(payload.deadline)) {
-    res.status(400).send({ message: "Invalid deadline date!" });
-    return;
-  }
+//   if(!validator.isISO8601(payload.deadline)) {
+//     res.status(400).send({ message: "Invalid deadline date!" });
+//     return;
+//   }
 
-  if(!validator.isISO8601(payload.party)) {
-    res.status(400).send({ message: "Invalid party date!" });
-    return;
-  }
+//   if(!validator.isISO8601(payload.party)) {
+//     res.status(400).send({ message: "Invalid party date!" });
+//     return;
+//   }
 
-  var userValid = tokenTool.validateToken(payload.token);
-  var user_id;
+//   var userValid = tokenTool.validateToken(payload.token);
+//   var user_id;
 
-  dbHelper.getUserRecord(payload.email)
-    .then((row) => {
-      return dbHelper.insertOrganisation(payload.name, payload.deadline, payload.party, payload.location, row.id)
-    })
-    .then((rows) => {
-      res.status(200).send(rows[0]);
-      return;
-    })
-    .catch((err) => {
-      console.error(err);
-      res.status(500);
-    })
+//   dbHelper.getUserRecord(payload.email)
+//     .then((row) => {
+//       return dbHelper.insertOrganisation(payload.name, payload.deadline, payload.party, payload.location, row.id)
+//     })
+//     .then((rows) => {
+//       res.status(200).send(rows[0]);
+//       return;
+//     })
+//     .catch((err) => {
+//       console.error(err);
+//       res.status(500);
+//     })
 
-}
+// }
 
 function joinOrganisation(req, res) {
   const payload = req.body;
@@ -206,6 +209,7 @@ function joinOrganisation(req, res) {
 
   dbHelper.getUserIdForEmail(payload.email)
     .then((user_id) => {
+      console.log("USER ID:", user_id)
       return dbHelper.joinOrganisation(user_id, payload.organisation_id)
     })
     .then((result) => {
