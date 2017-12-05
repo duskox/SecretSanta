@@ -11,7 +11,7 @@ module.exports = {
   // registerNewUser,
   // listOfOrganisations,
   // assignUserToOrganisation,
-  createOrganisationAddUserToIt,
+  // createOrganisationAddUserToIt,
   // loginUser,
   // verifyToken,
   leaveOrganisation,
