@@ -24,6 +24,7 @@ router.route('/organisation').post();
 // WORKING
 router.route('/setuser').post(santaCtrl.setUser);
 router.route('/join').post(santaCtrl.joinOrganisation);
+router.route('/calculate/me/very/much').post(santaCtrl.assignKidsToSantas)
 
 
 module.exports = router;

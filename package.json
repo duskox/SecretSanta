@@ -4,7 +4,7 @@
   "description": "SecretSanta-backend",
   "engines": {
     "node": "9.0.0",
-    "npm":"5.5.1"
+    "npm": "5.5.1"
   },
   "main": "server.js",
   "scripts": {
@@ -21,6 +21,7 @@
     "googleapis": "^20.1.0",
     "jsonwebtoken": "^7.4.2",
     "knex": "^0.13.0",
+    "lodash": "^4.17.4",
     "morgan": "^1.8.2",
     "pg": "^7.1.0",
     "react-html-document": "^3.1.0"

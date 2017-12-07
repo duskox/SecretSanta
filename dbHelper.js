@@ -16,11 +16,12 @@ module.exports = { insertUser,
                   isUserPartOfOrganisation,
                   getOrganisationDetails,
                   leaveOrganisation,
-                  insertSantaKidPair,
                   getAllUsersInOrganisation,
                   getSecretSantaPairForUserId,
                   getUserForId,
-                  getKidName
+                  getKidName,
+                  getAllUsersInTheOrganisation,
+                  insertSantaKidPairs
                 };
 
 /*
@@ -265,17 +266,16 @@ function getAllUsersInOrganisation(organisation_id) {
     });
 }
 
-function insertSantaKidPair(santa_user_id, kid_user_id, org_id) {
-  console.log("In insertSantaKidPair");
-  return knex('secretsantas')
-    .insert({ santa_user_id: santa_user_id, kid_user_id: kid_user_id, org_id: org_id })
-    then((response) => {
-      console.log("insertSantaKidPair response success:", response);
-      return response;
-    })
-    .catch((err) => {
-      console.error(err);
-      throw err;
-      return -1;
-    });
+function insertSantaKidPairs(pairsArr) {
+  console.log("In insertSantaKidPairs")
+  return knex('secretsantas').insert(pairsArr);
+}
+
+function getAllUsersInTheOrganisation(org_id) {
+    console.log("In getAllUsersInTheOrganisation");
+    return knex
+      .select('users.email', 'users.id', 'users.name')
+      .from('users')
+      .join('memberships', 'users.id', 'memberships.user_id')
+      .where('memberships.org_id', org_id);
 }

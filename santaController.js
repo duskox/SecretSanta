@@ -4,6 +4,7 @@ var hashTool = require('./utils/hashTool');
 var tokenTool = require('./utils/tokenTool');
 var dbHelper = require('./dbHelper');
 var util = require('./utils/util');
+var _ = require('lodash');
 
 module.exports = {
   // addUser,
@@ -18,6 +19,7 @@ module.exports = {
   setUser,
   // insertUser,
   joinOrganisation,
+  assignKidsToSantas,
 // This is to be removed soon
 postDefaultPOSTResponse : function(req, res) {
 res.status(200).send({ message : 'Welcome to the beginning of POST response!', });
@@ -27,6 +29,37 @@ res.status(200).send({ message : 'Welcome to the beginning of GET response!', })
 }
 }
 
+function arrayRotate(arr, count) {
+  count -= arr.length * Math.floor(count / arr.length)
+  arr.push.apply(arr, arr.splice(0, count))
+  return arr
+}
+
+function assignKidsToSantas(req, res) {
+  const payload = req.body;
+  console.log("REQ here", req.body)
+  if (payload.provjera == "sokol") {
+    dbHelper.getAllUsersInTheOrganisation(1)
+      .then((rows) => {
+        const santas = _.shuffle(rows);
+        const kids = arrayRotate(_.cloneDeep(santas), 1)
+        console.log("Santas:", santas)
+        console.log("Kids", kids);
+        let result = []
+        for (let i = 0; i < santas.length; i++) {
+          result.push({ santa_user_id: santas[i].id, kid_user_id: kids[i].id, org_id: 1 })
+        }
+        console.log("Pairs:", result)
+        return dbHelper.insertSantaKidPairs(result);
+      })
+      .then((result) => {
+        console.log("Res:", result)
+      })
+      .catch((err) => {
+        console.error(err);
+      })
+  }
+}
 
 function setUser(req,res) {
   console.log("SETTING USER!!!!--------------------------")
