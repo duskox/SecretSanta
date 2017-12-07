@@ -50,7 +50,7 @@ function assignKidsToSantas(req, res) {
           result.push({ santa_user_id: santas[i].id, kid_user_id: kids[i].id, org_id: 1 })
         }
         console.log("Pairs:", result)
-        return dbHelper.insertSantaKidPairs(result);
+        // return dbHelper.insertSantaKidPairs(result);
       })
       .then((result) => {
         console.log("Res:", result)

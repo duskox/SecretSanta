@@ -268,7 +268,7 @@ function getAllUsersInOrganisation(organisation_id) {
 
 function insertSantaKidPairs(pairsArr) {
   console.log("In insertSantaKidPairs")
-  return knex('secretsantas').insert(pairsArr);
+  // return knex('secretsantas').insert(pairsArr);
 }
 
 function getAllUsersInTheOrganisation(org_id) {
