@@ -203,7 +203,8 @@ function joinOrganisation(user_id, organisation_id) {
     });
 }
 
-function isUserPartOfOrganisation(user_id) {
+
+function getOrganisationUserJoined(user_id) {
   console.log("In isUserPartOfOrganisation user_id:", user_id);
   return knex.select('org_id')
     .from('memberships')

@@ -91,12 +91,9 @@ function setUser(req,res) {
         return new Promise((resolve, reject) => {
           dbHelper.getKidName(id)
           .then((result) => {
-            console.log("Kakav je rezultat:", result)
             if (result == -1) {
-              console.log("U -1 >>>>>>>>")
               resolve(id);
             } else {
-              console.log("SALJEM REPLY:", result)
               const formattedResponse = {
                 kid_name: result[0].name,
               }
@@ -105,13 +102,12 @@ function setUser(req,res) {
             }
           })
           .catch((err) => {
-            console.log("U prvom ketchu", err)
             throw err
           })
         })
       })
       .then((id) => {
-        return dbHelper.isUserPartOfOrganisation(id)
+        return dbHelper.getOrganisationUserJoined(id)
       })
       .then((result) => {
         console.log("result:", result)
@@ -131,7 +127,6 @@ function setUser(req,res) {
         }
       })
       .catch((err) => {
-        console.log("U drugom ketchu", err)
         if (err == 'CustomThrow') {
           // do nothing
         } else {
