@@ -1,6 +1,6 @@
 # Secret Santa backend
 
-Learning Node.js project and should provide backend functionality for a Secret Santa draw among a group of people.
+Backend for a Secret Santa app that allows people to join a raffle and on a set deadline shows them who they have to buy a present for.
 
 ## Supposed functionality
 
