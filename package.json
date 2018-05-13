@@ -35,5 +35,9 @@
     "heroku",
     "express"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "prettier": {
+    "printWidth": 100,
+    "parser": "flow"
+  }
 }
